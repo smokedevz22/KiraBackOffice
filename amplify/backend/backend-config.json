@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "daash5e142183": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  }
+}

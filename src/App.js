@@ -11,6 +11,7 @@ import { ThemeProvider } from "styled-components/macro";
 
 import createTheme from "./theme";
 import Routes from "./routes/Routes";
+import { withAuthenticator } from "@aws-amplify/ui-react";
 
 function App() {
   const theme = useSelector((state) => state.themeReducer);
@@ -34,4 +35,4 @@ function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);

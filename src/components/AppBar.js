@@ -2,7 +2,7 @@ import React from "react";
 import styled, { withTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { Search as SearchIcon } from "react-feather";
-
+import { withAuthenticator, AmplifySignOut } from "@aws-amplify/ui-react";
 import {
   Grid,
   Hidden,
@@ -75,6 +75,7 @@ const Input = styled(InputBase)`
 const AppBarComponent = ({ onDrawerToggle }) => (
   <React.Fragment>
     <AppBar position="sticky" elevation={0}>
+      <AmplifySignOut />
       <Toolbar>
         <Grid container alignItems="center">
           <Hidden mdUp>
