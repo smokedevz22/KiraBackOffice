@@ -19,6 +19,7 @@ import {
   Sliders,
   Users,
 } from "react-feather";
+import TiposCuentaDeposito from "../pages/pages/TiposCuentaDeposito";
 
 // Guards
 const AuthGuard = async(() => import("../components/AuthGuard"));
@@ -77,6 +78,43 @@ const Projects = async(() => import("../pages/pages/Projects"));
 const Calendar = async(() => import("../pages/pages/Calendar"));
 const Chat = async(() => import("../pages/pages/Chat"));
 
+
+//Products
+const Products = async(() => import("../pages/pages/Products"));
+const Actividades = async(() => import("../pages/pages/Actividades"));
+const Tarifas = async(() => import("../pages/pages/Tarifas"));
+const CoberturasProductos = async(() => import("../pages/pages/CoberturasProductos"));
+const Siniestros = async(() => import("../pages/pages/Siniestros"));
+const Polizas = async(() => import("../pages/pages/Polizas"));
+const Cotizaciones = async(() => import("../pages/pages/Cotizaciones"));
+const Usuarios = async(() => import("../pages/pages/Usuarios"));
+
+const PlanesProductos = async(() => import("../pages/pages/PlanesProductos"));
+
+
+const Bancos = async(() => import("../pages/pages/Bancos"));
+const Tarjetas = async(() => import("../pages/pages/Tarjetas"));
+const TiposCuentasDeposito = async(() => import("../pages/pages/TiposCuentaDeposito"));
+const TiposMediosPago = async(() => import("../pages/pages/TiposMediosPago"));
+const MediosDeposito = async(() => import("../pages/pages/MediosDepositos"));
+const MediosPago = async(() => import("../pages/pages/MediosPago"));
+const VigenciasActivas = async(() => import("../pages/pages/VigenciasActivas"));
+const Ubicaciones = async(() => import("../pages/pages/Ubicaciones"));
+const Autos = async(() => import("../pages/pages/Autos"));
+const TarifasAuto = async(() => import("../pages/pages/TarifasAuto"));
+
+const Liquidaciones = async(() => import("../pages/pages/LiquidacionBitacora"));
+const EstadosLiquidaciones = async(() => import("../pages/pages/EstadosLiquidaciones"));
+const CausalesSiniestros = async(() => import("../pages/pages/CausalesSiniestros"));
+const BitacoraSiniestros = async(() => import("../pages/pages/BitacoraSiniestro"));
+const CoberturaCotizacion = async(() => import("../pages/pages/CoberturaCotizacion"));
+const EstadoCotizacion = async(() => import("../pages/pages/EstadoCotizacion"));
+const VigenciaCotizacion = async(() => import("../pages/pages/VigenciaCotizacion"));
+const MultimediaCotizacion = async(() => import("../pages/pages/MultimediaCotizacion"));
+const MultimediaPoliza = async(() => import("../pages/pages/MultimediaPoliza"));
+const CoberturaPoliza = async(() => import("../pages/pages/CoberturaPoliza"));
+const CobroPoliza = async(() => import("../pages/pages/CobroPoliza"));
+
 // Tables components
 const SimpleTable = async(() => import("../pages/tables/SimpleTable"));
 const AdvancedTable = async(() => import("../pages/tables/AdvancedTable"));
@@ -116,68 +154,181 @@ const dashboardsRoutes = {
   path: "/dashboard",
   header: "Pages",
   icon: <Sliders />,
-  containsHome: true,
-  children: [
-    {
-      path: "/dashboard/default",
-      name: "Default",
-      component: Default,
-    },
-    {
-      path: "/dashboard/analytics",
-      name: "Analytics",
-      component: Analytics,
-    },
-    {
-      path: "/dashboard/saas",
-      name: "SaaS",
-      component: SaaS,
-    },
-  ],
-  component: null,
+  component: Default,
 };
 
+
+
 const pagesRoutes = {
-  id: "Pages",
-  path: "/pages",
-  icon: <Layout />,
+  id: "BACK-API",
+  path: "/",
+  icon: <Grid />,
   children: [
+
     {
-      path: "/pages/profile",
-      name: "Profile",
-      component: Profile,
+      path: "/pages/products",
+      name: "Productos",
+      component: Products,
     },
     {
-      path: "/pages/settings",
-      name: "Settings",
-      component: Settings,
+      path: "/pages/actividades",
+      name: "Actividades",
+      component: Actividades,
     },
     {
-      path: "/pages/pricing",
-      name: "Pricing",
-      component: Pricing,
+      path: "/pages/planes",
+      name: "Planes",
+      component: PlanesProductos,
     },
     {
-      path: "/pages/chat",
-      name: "Chat",
-      component: Chat,
+      path: "/pages/tarifas",
+      name: "Tarifas",
+      component: Tarifas,
     },
     {
-      path: "/pages/blank",
-      name: "Blank Page",
-      component: Blank,
+      path: "/pages/coberturas",
+      name: "Coberturas",
+      component: CoberturasProductos,
+    },
+
+
+    {
+      path: "/pages/siniestros",
+      name: "Siniestros",
+      component: Siniestros,
+    },
+    {
+      path: "/pages/polizas",
+      name: "Polizas",
+      component: Polizas,
+    },
+    {
+      path: "/pages/cotizaciones",
+      name: "Cotizaciones",
+      component: Cotizaciones,
+    },
+    {
+      path: "/pages/usuarios",
+      name: "Usuarios",
+      component: Usuarios,
     },
   ],
   component: null,
+
 };
 
 const projectsRoutes = {
-  id: "Projects",
-  path: "/projects",
-  icon: <Briefcase />,
-  badge: "8",
-  component: Projects,
-  children: null,
+  id: "GLOBALES",
+  path: "/",
+  icon: <Grid />,
+  children: [
+    {
+      path: "/globales/bancos",
+      name: "Bancos",
+      component: Bancos,
+    },
+    {
+      path: "/globales/tarjetas",
+      name: "Tarjetas",
+      component: Tarjetas,
+    }, {
+      path: "/globales/cuentas_deposito",
+      name: "Tipo cuentas depositos",
+      component: TiposCuentasDeposito,
+    },
+    {
+      path: "/globales/tipos_pago",
+      name: "Tipos Medios Pago",
+      component: TiposMediosPago,
+    },
+    {
+      path: "/globales/medios_depositos",
+      name: "Medios de depositos",
+      component: MediosDeposito,
+    },
+    {
+      path: "/globales/medios_pagos",
+      name: "Medio de pago",
+      component: MediosPago,
+    },
+    {
+      path: "/globales/vigencias_activas",
+      name: "Vigencia activa",
+      component: VigenciasActivas,
+    },
+
+    {
+      path: "/globales/ubicaciones",
+      name: "Ubicaciones",
+      component: Ubicaciones,
+    },
+    {
+      path: "/globales/autos",
+      name: "Autos",
+      component: Autos,
+    },
+    {
+      path: "/globales/tarifas_autos",
+      name: "Tarifas auto",
+      component: TarifasAuto,
+    },
+    {
+      path: "/globales/bitacora_siniestros",
+      name: "Bitacora siniestro",
+      component: BitacoraSiniestros,
+    },
+    {
+      path: "/globales/liquidaciones_bitacora",
+      name: "Liquidacion bitacora",
+      component: Liquidaciones,
+    },
+    {
+      path: "/globales/estado_liquidaciones",
+      name: "Estados liquidacion",
+      component: EstadosLiquidaciones,
+    },
+    {
+      path: "/globales/causales_siniestros",
+      name: "Causales siniestros",
+      component: CausalesSiniestros,
+    },
+    {
+      path: "/globales/cobertura_cotizacion",
+      name: "Cobertura cotizacion",
+      component: CoberturaCotizacion,
+    },
+    {
+      path: "/globales/estado_cotizacion",
+      name: "Estado cotizacion",
+      component: EstadoCotizacion,
+    },
+
+    {
+      path: "/globales/vigencia_activa",
+      name: "Vigencia cotizacion",
+      component: VigenciaCotizacion,
+    },
+    {
+      path: "/globales/multimedia_cotizacion",
+      name: "Multimedia cotizacion",
+      component: MultimediaCotizacion,
+    },
+    {
+      path: "/globales/multimedia_poliza",
+      name: "Multimedia poliza",
+      component: MultimediaPoliza,
+    },
+    {
+      path: "/globales/cobertura_poliza",
+      name: "Cobertura poliza",
+      component: CoberturaPoliza,
+    },
+    {
+      path: "/globales/cobro_poliza",
+      name: "Cobro poliza",
+      component: CobroPoliza,
+    },
+  ],
 };
 
 const invoiceRoutes = {
@@ -564,20 +715,10 @@ export const protectedRoutes = [protectedPageRoutes];
 
 // Routes visible in the sidebar
 export const sidebarRoutes = [
-  dashboardsRoutes,
   pagesRoutes,
   projectsRoutes,
-  orderRoutes,
   invoiceRoutes,
-  tasksRoutes,
   calendarRoutes,
   authRoutes,
-  componentsRoutes,
-  chartRoutes,
-  formsRoutes,
-  tablesRoutes,
-  iconsRoutes,
-  mapsRoutes,
-  documentationRoutes,
   changelogRoutes,
 ];
