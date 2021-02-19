@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, useState } from 'react';
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 import { API } from "aws-amplify";
@@ -79,9 +79,11 @@ const Customer = styled.div`
 
 const headCells = [
 
-  { id: "id", alignment: "right", label: "ID" },
-  { id: "codigo_banco", alignment: "right", label: "CODIGO BANCO" },
-  { id: "nombre_banco", alignment: "right", label: "NOMBRE BANCO" },
+  { id: "nombre_tecnico", alignment: "right", label: "NOMBRE TECNICO" },
+  { id: "nombre_comercial", alignment: "right", label: "NOMBRE COMERCIAL" },
+  { id: "descripcion", alignment: "right", label: "DESCRIPCION" },
+  { id: "fechaInicio", alignment: "right", label: "FECHA INICIO" },
+  { id: "fechaTermino", alignment: "right", label: "FECHA TERMINO" },
   { id: "opciones", alignment: "right", label: "OPCIONES" },
 ];
 const Card = styled(MuiCard)(spacing);
@@ -175,18 +177,107 @@ let EnhancedTableToolbar = (props) => {
     </Toolbar>
   );
 };
+
+
+
+async function registrarItem() {
+
+
+  const mutation = `
+  mutation MyMutation($bank:InputRegisterPlan!) {
+  registerPlan (input:$bank){
+    data_plan
+  }
+}
+`;
+
+  await API.graphql({
+    query: mutation,
+    variables: {
+      bank: {
+        data_plan: JSON.stringify(itemProducto)
+      }
+    }
+
+  });
+
+  console.log("Banco creado exitosamente!");
+
+}
+
+async function obtenerListaItems() {
+
+  const queryListaActividadGraphql = `
+ query MyQuery {
+   listasPlanes {
+  data_plan
+  }
+}
+
+`;
+
+  console.log(queryListaActividadGraphql)
+  const data = await API.graphql({
+    query: queryListaActividadGraphql
+  });
+  console.log("data from GraphQL:", data);
+
+  rows = [];
+  let listasProductos = data['data']['listasPlanes'];
+  listasProductos.forEach(element => {
+
+    let itemPlan = element['data_plan']
+    console.log(itemPlan);
+    rows.push(createData(itemPlan.descripcion,
+      itemPlan.codigo_producto,
+      itemPlan.plan,
+      itemPlan.nombre_plan,
+      itemPlan.caracteristicas,
+      itemPlan.brief,
+    ))
+  });
+  console.log(listasProductos)
+
+
+  return true;
+}
+
+
 const CenteredContent = styled.div`
   text-align: center;
 `;
 
 function createData(
-  id,
-  codigo,
-  nombre
+  anexo_cp,
+  descripcion,
+  carta_cp,
+  descripcion_larga,
+  fecha_inicio,
+  fecha_termino,
+  imagen,
+  logo,
+  nombre_comercial,
+  nombre_tecnico,
+  periodo,
+  producto_cp,
+  valor_minimo,
 ) {
-  return { id, codigo, nombre };
+  return {
+    descripcion,
+    carta_cp,
+    descripcion_larga,
+    fecha_inicio,
+    fecha_termino,
+    imagen,
+    logo,
+    nombre_comercial,
+    nombre_tecnico,
+    periodo,
+    producto_cp,
+    valor_minimo
+  };
 }
-const rows = [
+let rows = [
 ];
 
 function descendingComparator(a, b, orderBy) {
@@ -220,164 +311,6 @@ const BigAvatar = styled(Avatar)`
   height: 120px;
   margin: 0 auto ${(props) => props.theme.spacing(2)}px;
 `;
-
-let itemBanco = {};
-function SaveValue(key, value) {
-  itemBanco[key] = value
-}
-
-
-function Public() {
-  return (
-    <div>
-
-      <Card mb={12}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            REGISTRAR PLANES PRODUCTO
-        </Typography>
-          <Grid container spacing={12}>
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="ID_PLAN"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="CODIGO_PRODUCTO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="PLAN"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="NOMBRE_PLAN"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-            <Grid item md={12} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="CARACTERISTICAS"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-            <Grid item md={12} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="BRIEF"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-          </Grid>
-          <Button
-            onClick={fetchNotes}
-            style={{ marginRight: "4px" }}
-            variant="contained"
-            color="primary"
-            mt={3}
-          >
-            LISTAR PLAN
-        </Button>
-          <Button onClick={createNote} variant="contained" color="primary" mt={3}>
-            GUARDAR PLAN
-        </Button>
-        </CardContent>
-      </Card>
-
-
-    </div >
-  );
-}
-const query = `
-  query listNotes {
-    getBanks {
-    codigo_banco
-    id
-    nombre_banco
-  }
-  }
-`;
-async function fetchNotes() {
-  const data = await API.graphql({ query });
-  console.log("data from GraphQL:", data);
-
-  let listaBancos = data['data']['getBanks'];
-  listaBancos.forEach(element => {
-    console.log(element);
-    rows.push(createData(element.id, element.codigo_banco, element.nombre_banco))
-  });
-}
-
-
-async function createNote() {
-
-
-
-  console.log("idBanco :" + itemBanco['id_banco'] + " codigoBanco :" + itemBanco['codigo_banco'] + " nombreBanco:" + itemBanco['nombre_banco'])
-
-  let idBanco = Number(itemBanco['id_banco']);
-  let codigoBanco = itemBanco['codigo_banco'];
-  let nombreBanco = itemBanco['nombre_banco'];
-
-  const mutation = `
-  mutation MyMutation($bank:BankInput!) {
-  createBank (input:$bank){
-    codigo_banco
-    id
-    nombre_banco
-  }
-}
-`;
-
-  await API.graphql({
-    query: mutation,
-    variables: { bank: { id: idBanco, codigo_banco: codigoBanco, nombre_banco: nombreBanco } }
-
-  });
-  console.log("Banco creado exitosamente!");
-
-  fetchNotes();
-
-}
 
 function EnhancedTable() {
   const [order, setOrder] = React.useState("asc");
@@ -483,14 +416,15 @@ function EnhancedTable() {
                         </Customer>
                       </TableCell>
 
-                      <TableCell align="right">##{row.id}</TableCell>
-                      <TableCell align="right" style={{ color: "black" }}>##{row.codigo}</TableCell>
-                      <TableCell align="right">##{row.nombre}</TableCell>
+                      <TableCell align="right">##{row.nombre_comercial}</TableCell>
+                      <TableCell align="right">##{row.nombre_tecnico}</TableCell>
+                      <TableCell align="right">##{row.descripcion}</TableCell>
+                      <TableCell align="right">##{row.fecha_inicio}</TableCell>
+                      <TableCell align="right">##{row.fecha_termino}</TableCell>
+
 
                       <TableCell align="right">
-                        <IconButton aria-label="delete">
-                          <ArchiveIcon />
-                        </IconButton>
+
                         <IconButton
                           aria-label="details"
                           component={NavLink}
@@ -523,26 +457,177 @@ function EnhancedTable() {
     </div>
   );
 }
+let itemProducto = {};
 
-function Private() {
+function SaveValue(key, value) {
+  itemProducto[key] = value
+}
+
+function FormularioRegistroRender() {
+
+
+
   return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          LISTA DE BANCOS
-        </Typography>
+    <div>
 
-        <Grid container spacing={6}>
-          <Grid item xs={10}>
-            <EnhancedTable />
+
+      <Card mb={12}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            REGISTRAR PLANES PRODUCTO
+        </Typography>
+          <Grid container spacing={12}>
+
+
+
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="plan"
+                label="PLAN"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("plan", event.target.value)}
+                my={2}
+              />
+            </Grid>
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="nombre_plan"
+                label="NOMBRE_PLAN"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("nombre_plan", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={12} style={{ padding: '4px' }}>
+              <TextField
+                id="imagen_comercial_plan"
+                label="imagen_comercial_plan"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("imagen_comercial_plan", event.target.value)}
+                my={2}
+              />
+            </Grid>
+            <Grid item md={12} style={{ padding: '4px' }}>
+              <TextField
+                id="descripcion_comercial_plan"
+                label="descripcion_comercial_plan"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("descripcion_comercial_plan", event.target.value)}
+                my={2}
+              />
+            </Grid>
+            <Grid item md={12} style={{ padding: '4px' }}>
+              <TextField
+                id="caracteristicas"
+                label="CARACTERISTICAS"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("caracteristicas", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={12} style={{ padding: '4px' }}>
+              <TextField
+                id="brief"
+                label="BRIEF"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("brief", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
           </Grid>
+
+          <Button onClick={registrarItem} variant="contained" color="primary" mt={3}>
+            GUARDAR PLAN
+        </Button>
+        </CardContent>
+      </Card>
+
+
+
+
+
+    </div >
+  );
+}
+const query = `
+  query listNotes {
+    getBanks {
+    codigo_banco
+    id
+    nombre_banco
+  }
+  }
+`;
+
+function ListaRegistrosRender() {
+  return (
+    <Card mb={10}>
+      <CardContent>
+
+
+        <Grid item mb={10}>
+          <EnhancedTable />
         </Grid>
       </CardContent>
     </Card>
   );
 }
 
-function PlanesProductos() {
+function Products() {
+
+
+  const [menu, setMenu] = useState(2);
+
+
+  let itemRender = <ListaRegistrosRender />;
+
+  const btnListaElementos = async () => {
+    setMenu(2);
+    let response = await obtenerListaItems(setMenu);
+    console.log(response)
+    setMenu(2);
+
+  };
+
+  const btnRegistrarElemento = () => {
+    setMenu(1);
+  };
+
+  switch (menu) {
+    case 1:
+      itemRender =
+        <div>
+          <FormularioRegistroRender />
+
+        </div>
+      break;
+    case 2:
+      itemRender =
+        <div>
+          <ListaRegistrosRender />
+        </div>
+
+      break;
+
+  }
+
+
   return (
     <React.Fragment>
       <Helmet title="Settings" />
@@ -563,13 +648,40 @@ function PlanesProductos() {
 
       <Divider my={6} />
 
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <Public />
+      <Grid style={{ height: '60px' }}   >
+        <Grid mb={10} >
+          <Grid mb={10} >
+            <div style={{ display: "flex", justifyContent: 'flex-end', alignItems: 'center' }}>
+              <Button
+                onClick={btnListaElementos}
+                style={{ marginRight: "4px" }}
+                variant="contained"
+                color="primary"
+                mt={3}
+              >
+                LISTA
+        </Button>
+              <Button
+                onClick={btnRegistrarElemento}
+                style={{ marginRight: "4px" }}
+                variant="contained"
+                color="primary"
+                mt={3}
+              >
+                NUEVA
+        </Button>
+            </div>
+
+          </Grid>
         </Grid>
+
+
       </Grid>
-    </React.Fragment>
+      <Grid mb={10}>
+        {itemRender}
+      </Grid>
+    </React.Fragment >
   );
 }
 
-export default PlanesProductos;
+export default Products;

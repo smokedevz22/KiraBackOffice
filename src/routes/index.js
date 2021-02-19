@@ -89,8 +89,13 @@ const Polizas = async(() => import("../pages/pages/Polizas"));
 const Cotizaciones = async(() => import("../pages/pages/Cotizaciones"));
 const Usuarios = async(() => import("../pages/pages/Usuarios"));
 
+const DetallePoliza = async(() => import("../pages/pages/DetalleSeguro"));
+const DetalleSiniestro = async(() => import("../pages/pages/DetalleSiniestro"));
+
+
 const PlanesProductos = async(() => import("../pages/pages/PlanesProductos"));
 
+const SubPlanes = async(() => import("../pages/pages/SubPlanes"));
 
 const Bancos = async(() => import("../pages/pages/Bancos"));
 const Tarjetas = async(() => import("../pages/pages/Tarjetas"));
@@ -181,6 +186,11 @@ const pagesRoutes = {
       component: PlanesProductos,
     },
     {
+      path: "/pages/subplanes",
+      name: "SubPlanes",
+      component: SubPlanes,
+    },
+    {
       path: "/pages/tarifas",
       name: "Tarifas",
       component: Tarifas,
@@ -189,6 +199,17 @@ const pagesRoutes = {
       path: "/pages/coberturas",
       name: "Coberturas",
       component: CoberturasProductos,
+    },
+
+    {
+      path: "/pages/siniestros/:id",
+      name: "Detalle siniestro",
+      component: DetalleSiniestro,
+    },
+    {
+      path: "/pages/polizas/:id",
+      name: "Detalle poliza",
+      component: DetallePoliza,
     },
 
 

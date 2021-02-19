@@ -234,13 +234,13 @@ function Public() {
       <Card mb={12}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            BANCOS
+            COBERTURA PRODUCTO
         </Typography>
           <Grid container spacing={12}>
             <Grid item md={6} style={{ padding: '4px' }}>
               <TextField
                 id="id"
-                label="CODIGO_BANCO"
+                label="ID_COBERTURA"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
@@ -252,22 +252,215 @@ function Public() {
             <Grid item md={6} style={{ padding: '4px' }}>
               <TextField
                 id="id"
-                label="NOMBRE_BANCO"
+                label="ID_PLAN"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("nombre_banco", event.target.value)}
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="ID_PRODUCTO"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+            <Grid item md={6} style={{ padding: '4px' }}>
+
+            </Grid>
+            <Grid item md={4} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="CODIGO_COBERTURA"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={8} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="NOMBRE_COBERTURA"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="POL_CAD_COBERTURA"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="COBERTURA_PDF"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="RAMO_FECU"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="RAMO_EERR"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="TIPO_TARIFICACION"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="TABLA_TARIFICACION"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="TASA_POR_MIL"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="TRAMO_POR_CARGAS"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="CAPITAL_MINIMO"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="CAPITAL_MAXIMO"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="TIPO_RIESGO"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
                 my={2}
               />
             </Grid>
             <Grid item md={6} style={{ padding: '4px' }}>
               <TextField
                 id="id"
-                label="NOMBRE_BANCO"
+                label="AFECTA_IVA"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("codigo_banco", event.target.value)}
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="FECHA_INICIA"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={6} style={{ padding: '4px' }}>
+              <TextField
+                id="id"
+                label="FECHA_TERMINO"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("id_banco", event.target.value)}
                 my={2}
               />
             </Grid>
@@ -280,15 +473,15 @@ function Public() {
             color="primary"
             mt={3}
           >
-            LISTAR BANCOS
+            LISTAR COBERTURAS
         </Button>
           <Button onClick={createNote} variant="contained" color="primary" mt={3}>
-            GURADAR BANCO
+            GURADAR COBERTUAS
         </Button>
         </CardContent>
       </Card>
-    </div>
 
+    </div >
   );
 }
 const query = `
@@ -331,8 +524,6 @@ async function createNote() {
   }
 }
 `;
-
-  console.log({ id: idBanco, codigo_banco: codigoBanco, nombre_banco: nombreBanco })
 
   await API.graphql({
     query: mutation,
@@ -508,13 +699,13 @@ function Private() {
   );
 }
 
-function Bancos() {
+function CoberturasProductos() {
   return (
     <React.Fragment>
       <Helmet title="Settings" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        GESTION BACKOFFICE - BANCOS
+        GESTION BACKOFFICE - COBERTURAS
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>
@@ -538,4 +729,4 @@ function Bancos() {
   );
 }
 
-export default Bancos;
+export default CoberturasProductos;

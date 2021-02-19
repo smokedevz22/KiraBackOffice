@@ -1,9 +1,11 @@
-import React from "react";
+import React, { Fragment, useState, Suspense, useEffect } from 'react';
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 import { API } from "aws-amplify";
 import Helmet from "react-helmet";
 import { green, orange } from "@material-ui/core/colors";
+import { Route } from 'react-router-dom'
+import { red, blue } from "@material-ui/core/colors";
 
 import {
   Breadcrumbs as MuiBreadcrumbs,
@@ -33,6 +35,7 @@ import {
   Toolbar,
   Tooltip,
 } from "@material-ui/core";
+import moment from 'moment';
 
 import {
   Add as AddIcon,
@@ -77,6 +80,14 @@ const Customer = styled.div`
   align-items: center;
 `;
 
+
+const ProductsChip = styled(Chip)`
+  height: 20px;
+  padding: 4px 0;
+  font-size: 90%;
+  background-color: ${(props) => props.rgbcolor};
+  color: ${(props) => props.theme.palette.common.white};
+`;
 const headCells = [
 
   { id: "id", alignment: "right", label: "ID" },
@@ -93,6 +104,32 @@ const TextField = styled(MuiTextField)(spacing);
 const Button = styled(MuiButton)(spacing);
 
 const CloudUpload = styled(MuiCloudUpload)(spacing);
+
+
+
+
+const querylistasSiniestros = `
+  query listasSiniestros {
+    listasSiniestros {
+    id
+    data_siniestro
+  }
+  }
+`;
+async function obtenerlistasSiniestros() {
+  const data = await API.graphql({ querylistasSiniestros });
+  console.log("data from GraphQL:", data);
+
+  let listaBancos = data['data']['litasSiniestros'];
+  listaBancos.forEach(element => {
+    console.log(element);
+    // rows.push(createData(element.id, element.codigo_banco, element.nombre_banco))
+  });
+}
+
+
+
+
 
 function EnhancedTableHead(props) {
   const {
@@ -227,229 +264,197 @@ function SaveValue(key, value) {
 }
 
 
-function Public() {
+function FormRegistrarSiniestro() {
   return (
-    <div>
-
-
-      <Card mb={12}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            REGISTRAR SINIESTRO
+    <Card mb={12}>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>
+          REGISTRAR SINIESTRO
         </Typography>
-          <Grid container spacing={12}>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="NUMERO_SIENIESTRO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="NUMERO_POLIZA"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="RUT_USUARIO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_DENUNCIA"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_SINIESTRO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="CODIGO_ESTADO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="CODIGO_CAUSAL"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={12} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="DESCRIPCION"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_ENVIO_CIA"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_ENVIO_LIQUIDACION"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_PAGO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="FECHA_CONTACTO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="MAIL"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="DIRECCION"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-            <Grid item md={3} style={{ padding: '4px' }}>
-              <TextField
-                id="id"
-                label="COMPLETADO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("id_banco", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
+        <Grid container spacing={12}>
+          <Grid item md={4} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="NUMERO_SIENIESTRO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
           </Grid>
-          <Button
-            onClick={fetchNotes}
-            style={{ marginRight: "4px" }}
-            variant="contained"
-            color="primary"
-            mt={3}
-          >
-            LISTA SINIESTROS
+
+
+          <Grid item md={4} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="NUMERO_POLIZA"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={4} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="RUT_USUARIO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={4} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_DENUNCIA"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={4} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_SINIESTRO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={6} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="CODIGO_ESTADO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={6} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="CODIGO_CAUSAL"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={12} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="DESCRIPCION"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_ENVIO_CIA"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_ENVIO_LIQUIDACION"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_PAGO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="FECHA_CONTACTO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="MAIL"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+          <Grid item md={6} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="DIRECCION"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+
+          <Grid item md={3} style={{ padding: '4px' }}>
+            <TextField
+              id="id"
+              label="COMPLETADO"
+              defaultValue=""
+              variant="outlined"
+              fullWidth
+              onChange={event => SaveValue("id_banco", event.target.value)}
+              my={2}
+            />
+          </Grid>
+
+        </Grid>
+
+        <Button onClick={createNote} variant="contained" color="primary" mt={3}>
+          GURADAR SINIESTRO
         </Button>
-          <Button onClick={createNote} variant="contained" color="primary" mt={3}>
-            GURADAR SINIESTRO
-        </Button>
-        </CardContent>
-      </Card>
+      </CardContent>
+    </Card>
 
 
-
-
-
-
-    </div >
-  );
+  )
 }
-const query = `
-  query listNotes {
-    getBanks {
-    codigo_banco
-    id
-    nombre_banco
-  }
-  }
-`;
-async function fetchNotes() {
-  const data = await API.graphql({ query });
-  console.log("data from GraphQL:", data);
 
-  let listaBancos = data['data']['getBanks'];
-  listaBancos.forEach(element => {
-    console.log(element);
-    rows.push(createData(element.id, element.codigo_banco, element.nombre_banco))
-  });
-}
+
+
 
 
 async function createNote() {
@@ -479,174 +484,162 @@ async function createNote() {
   });
   console.log("Banco creado exitosamente!");
 
-  fetchNotes();
 
 }
 
 function EnhancedTable() {
-  const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("customer");
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === "asc";
-    setOrder(isAsc ? "desc" : "asc");
-    setOrderBy(property);
-  };
 
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.id);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
 
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
-    let newSelected = [];
+  const [polizas, setPolizas] = useState('undefined');
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
 
-    setSelected(newSelected);
-  };
+  useEffect(async () => {
+    let temId = ''
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const isSelected = (id) => selected.indexOf(id) !== -1;
-
-  const emptyRows =
-    rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
-
-  return (
-    <div>
-      <Paper>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            aria-labelledby="tableTitle"
-            size={"medium"}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-
-                  console.log("rowPasada", row)
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
-
-                  return (
-                    <TableRow
-                      hover
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={`${row.id}-${index}`}
-                      selected={isItemSelected}
-                    >
-
-                      <TableCell component="th" id={labelId} scope="row">
-                        <Customer>
-                          <Avatar>{row.customerAvatar}</Avatar>
-                          <Box ml={3}>
-                            {row.customer}
-                            <br />
-                            {row.customerEmail}
-                          </Box>
-                        </Customer>
-                      </TableCell>
-
-                      <TableCell align="right">##{row.id}</TableCell>
-                      <TableCell align="right" style={{ color: "black" }}>##{row.codigo}</TableCell>
-                      <TableCell align="right">##{row.nombre}</TableCell>
-
-                      <TableCell align="right">
-                        <IconButton aria-label="delete">
-                          <ArchiveIcon />
-                        </IconButton>
-                        <IconButton
-                          aria-label="details"
-                          component={NavLink}
-                          to="/invoices/detail"
-                        >
-                          <RemoveRedEyeIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={7} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </div>
-  );
+    const queryListaActividadGraphql = `
+    query MyQuery {
+   listasSiniestros {
+     id
+    data_siniestro
+    email
+    numero_poliza
+  }
 }
 
-function Private() {
-  return (
-    <Card mb={6}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          LISTA DE BANCOS
-        </Typography>
+`;
 
-        <Grid container spacing={6}>
-          <Grid item xs={10}>
-            <EnhancedTable />
-          </Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
+    console.log(queryListaActividadGraphql)
+    const data = await API.graphql({
+      query: queryListaActividadGraphql
+    });
+    console.log("data from GraphQL:", data);
+    setPolizas(data)
+
+  }, [])
+
+  console.log("polizaaa", polizas)
+
+  if (polizas && polizas['data']) {
+
+    console.log("productos", polizas['data']['listasSiniestros']);
+
+    let listProductos = polizas['data']['listasSiniestros'];
+    console.log("listaProductos", listProductos)
+
+    return <TableBody style={{ width: '100%' }}>
+
+      {listProductos &&
+        listProductos.map((item, index) => {
+          console.log(item);
+
+          let itemTemporal = JSON.parse(item['data_siniestro']);
+
+          console.log(itemTemporal)
+
+          return (<TableRow style={{ width: '100%' }} key={index}>
+            <TableCell >
+              <ProductsChip
+                size="small"
+                label="ACTIVO"
+                rgbcolor={blue[500]}
+              />
+            </TableCell>
+
+            <TableCell >
+              <Typography gutterBottom style={{ fontSize: 11, textTransform: 'uppercase' }}>
+                {item['id']}
+              </Typography>
+
+            </TableCell>
+
+
+            <TableCell component="th" scope="row" >
+              <Typography style={{ fontSize: 11, textTransform: 'uppercase' }} gutterBottom>
+                {itemTemporal['detalle']['tipo_siniestro']}
+              </Typography>
+            </TableCell>
+
+            <TableCell component="th" scope="row"  >
+              <Typography gutterBottom style={{ fontSize: 11, textTransform: 'uppercase' }}>
+                {moment(itemTemporal['detalle']['fecha_siniestro']).format("DD/MM/YYYY")}
+              </Typography>
+            </TableCell>
+            <TableCell component="th" scope="row"  >
+
+              <Typography gutterBottom style={{ fontSize: 11, textTransform: 'uppercase', fontWeight: 'bold' }}>
+                {itemTemporal['polizaItem']}
+
+              </Typography>
+
+
+            </TableCell>
+
+
+            <TableCell component="th" scope="row"  >
+
+
+              <Typography gutterBottom style={{ fontSize: 11, textTransform: 'uppercase' }}>
+                {item['email']}
+
+              </Typography>
+
+            </TableCell>
+
+            <TableCell component="th" scope="row" >
+
+              <Grid style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                <Route style={{ marginRight: '6px', fontSize: 11 }} render={({ history }) => (
+                  <Button onClick={() => { history.push(`/pages/polizas/${item['numero_poliza']}`) }} size="small" color="primary">
+                    VER POLIZA
+                  </Button>
+
+                )} />
+
+                <Route style={{ marginRight: '6px', fontSize: 11 }} render={({ history }) => (
+                  <Button onClick={() => { history.push(`/pages/siniestros/${item['id']}`) }} size="small" color="primary">
+                    VER SINIESTRO
+                  </Button>
+
+                )} />
+
+              </Grid>
+            </TableCell>
+          </TableRow>
+          )
+        })
+      }
+    </TableBody >
+  } else {
+
+    return polizas && 'cargando...'
+
+  }
+
 }
+
+
 
 function Siniestros() {
+
+  let [renderView, setRenderView] = useState('lista')
+
+  let itemRender = ''
+
+
+  switch (renderView) {
+
+
+    case 'lista':
+      itemRender = <EnhancedTable />
+      break;
+
+    case 'nuevo':
+      itemRender = <FormRegistrarSiniestro />
+      break;
+  }
+
+
   return (
     <React.Fragment>
       <Helmet title="Settings" />
@@ -665,11 +658,28 @@ function Siniestros() {
         <Typography>PRODUCTOS</Typography>
       </Breadcrumbs>
 
+      <Grid item lg={12} style={{ display: 'flex' }}>
+        <Grid item lg={6}>
+          <Button onClick={() => {
+            setRenderView('lista')
+          }} variant="contained" color="primary" mt={3}>
+            LISTA SINIESTROS
+        </Button>
+        </Grid>
+
+        <Grid item lg={6} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button onClick={() => {
+            setRenderView('nuevo')
+          }} variant="contained" color="primary" mt={3}>
+            NUEVO SINIESTRO
+        </Button>
+        </Grid>
+      </Grid>
       <Divider my={6} />
 
       <Grid container spacing={6}>
         <Grid item xs={12}>
-          <Public />
+          {itemRender}
         </Grid>
       </Grid>
     </React.Fragment>

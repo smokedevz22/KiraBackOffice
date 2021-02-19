@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, Suspense, useEffect } from 'react';
 import styled from "styled-components/macro";
 import { NavLink } from "react-router-dom";
 import { API } from "aws-amplify";
@@ -180,13 +180,13 @@ let EnhancedTableToolbar = (props) => {
 
 
 
-async function registrarProducto() {
+async function registrarItem() {
 
 
   const mutation = `
-  mutation MyMutation($bank:InputRegisterProducto!) {
-  registerProducto (input:$bank){
-    data_producto
+  mutation MyMutation($bank:InputRegisterSubPlan!) {
+  registerSubPlan (input:$bank){
+    data_sub_plan
   }
 }
 `;
@@ -195,21 +195,23 @@ async function registrarProducto() {
     query: mutation,
     variables: {
       bank: {
-        data_producto: JSON.stringify(itemProducto)
+        id_plan: planSeleccionado['id'],
+        data_sub_plan: JSON.stringify(itemProducto)
       }
     }
 
   });
+
   console.log("Banco creado exitosamente!");
 
 }
 
-async function obtenerListaProductos() {
+async function obtenerListaItems() {
 
   const queryListaActividadGraphql = `
  query MyQuery {
-   listasProductos {
-    data_producto
+   listasSubPlanes {
+  data_sub_plan
   }
 }
 
@@ -222,24 +224,18 @@ async function obtenerListaProductos() {
   console.log("data from GraphQL:", data);
 
   rows = [];
-  let listasProductos = data['data']['listasProductos'];
+  let listasProductos = data['data']['listasSubPlanes'];
   listasProductos.forEach(element => {
 
-    let itemProducto = JSON.parse(element['data_producto'])
-    console.log("elemento", itemProducto);
-
-    rows.push(createData(itemProducto.descripcion,
-      itemProducto.carta_cp,
-      itemProducto.descripcion_larga,
-      itemProducto.fecha_inicio,
-      itemProducto.fecha_termino,
-      itemProducto.imagen,
-      itemProducto.logo,
-      itemProducto.nombre_comercial,
-      itemProducto.nombre_tecnico,
-      itemProducto.periodo,
-      itemProducto.producto_cp,
-      itemProducto.valor_minimo))
+    let itemPlan = JSON.parse(element['data_sub_plan'])
+    console.log(itemPlan);
+    rows.push(createData(itemPlan.descripcion,
+      itemPlan.codigo_producto,
+      itemPlan.plan,
+      itemPlan.nombre_plan,
+      itemPlan.caracteristicas,
+      itemPlan.brief,
+    ))
   });
   console.log(listasProductos)
 
@@ -412,7 +408,7 @@ function EnhancedTable() {
 
                       <TableCell component="th" id={labelId} scope="row">
                         <Customer>
-                          <Avatar><img src={row.fecha_termino} /> </Avatar>
+                          <Avatar>{row.customerAvatar}</Avatar>
                           <Box ml={3}>
                             {row.customer}
                             <br />
@@ -421,11 +417,11 @@ function EnhancedTable() {
                         </Customer>
                       </TableCell>
 
-                      <TableCell align="right">{row.nombre_comercial}</TableCell>
-                      <TableCell align="right">{row.nombre_tecnico}</TableCell>
-                      <TableCell align="right">{row.descripcion}</TableCell>
-                      <TableCell align="right">{row.fecha_inicio}</TableCell>
-                      <TableCell align="right">{row.fecha_termino}</TableCell>
+                      <TableCell align="right">##{row.nombre_comercial}</TableCell>
+                      <TableCell align="right">##{row.nombre_tecnico}</TableCell>
+                      <TableCell align="right">##{row.descripcion}</TableCell>
+                      <TableCell align="right">##{row.fecha_inicio}</TableCell>
+                      <TableCell align="right">##{row.fecha_termino}</TableCell>
 
 
                       <TableCell align="right">
@@ -463,213 +459,245 @@ function EnhancedTable() {
   );
 }
 let itemProducto = {};
+let itemRender = {};
 
-function SaveValue(keyy, value) {
+let listPlanes = [];
+let planSeleccionado = '';
+
+function SaveValue(key, value) {
+  itemProducto[key] = value
+}
+
+const ListaRender = (functionRenderDetalle) => {
+  const [productos, setProductos] = useState('undefined');
+  const [error, setError] = useState('undefined');
 
 
-  console.log(value);
-  console.log(itemProducto);
+  // console.log("listaProductos", listaProductos)
 
-  itemProducto[keyy] = value;
+  useEffect(async () => {
 
 
-  console.log(itemProducto);
+    const queryListaActividadGraphql = `
+ query MyQuery {
+      listasPlanes {
+        id
+data_plan
+  }
+}
+
+`;
+
+    console.log(queryListaActividadGraphql)
+    await API.graphql({
+      query: queryListaActividadGraphql
+    }).then(result => {
+      console.log(result);
+      setProductos(result);
+
+
+    }
+    )
+
+  }, []);
+
+
+  if (productos && productos['data']) {
+
+    console.log("productos", productos['data']['listasPlanes']);
+
+    let listaPlanes = productos['data']['listasPlanes'];
+    listPlanes = listaPlanes;
+
+    console.log("listaProductos", listaPlanes)
+
+
+
+    return < select style={{ width: '100%', height: '40px', textTransform: 'uppercase' }} onChange={functionRenderDetalle} >
+      < option value="_" > SELECCIONAR PLAN</option >
+
+      {
+        listaPlanes.map(item => {
+          console.log(item);
+          let itemPlan = JSON.parse(item['data_plan'])
+          return <option style={{ textTransform: 'uppercase' }} value={item['id']}> {itemPlan['nombre_plan']}</option>
+
+        })
+      }
+    </select >
+  } else {
+
+    return productos && 'cargando...'
+
+  }
 }
 
 function FormularioRegistroRender() {
 
+  const [dplan, setDplan] = useState('');
 
+  function handleChangePlan(event) {
+    console.log(event)
+
+    let plan = listPlanes.find((u) => {
+
+      return u['id'] === event.target.value
+
+
+    });
+    console.log("planSeleccionado", plan)
+    setDplan(plan)
+    planSeleccionado = plan;
+    // this.setState({ value: event.target.value });
+    // RenderDetallePlan(user)
+  };
+
+
+
+  itemRender = ListaRender(handleChangePlan)
 
   return (
     <div>
 
 
-      <Card mb={10}>
+
+
+
+      <Card mb={12}>
         <CardContent>
-          <Typography variant="h6" gutterBottom>
-            REGISTRAR PRODUCTO
-        </Typography>
+
           <Grid container spacing={12}>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="codigo_producto"
-                label="CODIGO_PRODUCTO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("codigo_producto", event.target.value)}
-                my={2}
-              />
+
+
+            <Grid item md={12} style={{ padding: '4px', marginTop: '22px' }}>
+              <Typography variant="h6" gutterBottom>
+                REGISTRAR SUBPLAN
+        </Typography>
+
+
             </Grid>
 
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="nombre_comercial"
-                label="NOMBRE_COMERCIAL"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("nombre_comercial", event.target.value)}
-                my={2}
-              />
-            </Grid>
-            <Grid item md={4} style={{ padding: '4px' }}>
-              <TextField
-                id="nombre_tecnico"
-                label="NOMBRE_TECNICO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("nombre_tecnico", event.target.value)}
-                my={2}
-              />
+            <Grid item md={12} style={{ padding: '4px', marginTop: '22px' }}>
+              {itemRender}
+
             </Grid>
 
-            <Grid item md={6} style={{ padding: '4px' }}>
-              <TextField
-                id="fecha_inicio"
-                label="FECHA_INICIO"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("fecha_inicio", event.target.value)}
-                my={2}
-              />
-            </Grid>
 
-            <Grid item md={6} style={{ padding: '4px' }}>
+
+            <Grid item md={12} style={{ padding: '4px' }}>
               <TextField
-                id="fecha_termino"
-                label="FECHA_TERMINO"
+                id="nombre"
+                label="nombre"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("fecha_termino", event.target.value)}
+                onChange={event => SaveValue("nombre", event.target.value)}
                 my={2}
               />
             </Grid>
 
             <Grid item md={12} style={{ padding: '4px' }}>
               <TextField
-                id="producto_cp"
-                label="PRODUCTO_CP"
+                id="imagen_comercial"
+                label="imagen_comercial"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("producto_cp", event.target.value)}
+                onChange={event => SaveValue("imagen_comercial", event.target.value)}
+                my={2}
+              />
+            </Grid>
+
+            <Grid item md={12} style={{ padding: '4px' }}>
+              <TextField
+                id="descripcion_comercial"
+                label="descripcion_comercial"
+                defaultValue=""
+                variant="outlined"
+                fullWidth
+                onChange={event => SaveValue("descripcion_comercial", event.target.value)}
                 my={2}
               />
             </Grid>
             <Grid item md={12} style={{ padding: '4px' }}>
               <TextField
-                id="anexo_cp"
-                label="ANEXO_CP"
+                id="caracteristicas"
+                label="caracteristicas"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("anexo_cp", event.target.value)}
+                onChange={event => SaveValue("caracteristicas", event.target.value)}
                 my={2}
               />
             </Grid>
-            <Grid item md={12} style={{ padding: '4px' }}>
-              <TextField
-                id="carta_cp"
-                label="CARTA_CP"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("carta_cp", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
 
             <Grid item md={12} style={{ padding: '4px' }}>
               <TextField
-                id="logo"
-                label="LOGO"
+                id="brief"
+                label="brief"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("logo", event.target.value)}
+                onChange={event => SaveValue("brief", event.target.value)}
                 my={2}
               />
             </Grid>
 
 
-            <Grid item md={12} style={{ padding: '4px' }}>
+            <Grid item md={3} style={{ padding: '4px' }}>
               <TextField
-                id="imagen"
-                label="IMAGEN"
+                id="capital"
+                label="capita"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("imagen", event.target.value)}
+                onChange={event => SaveValue("capital", event.target.value)}
                 my={2}
               />
             </Grid>
 
-
-
-            <Grid item md={6} style={{ padding: '4px' }}>
+            <Grid item md={3} style={{ padding: '4px' }}>
               <TextField
-                id="valor_minimo"
-                label="VALOR MINIMO"
+                id="capital_atm"
+                label="capital atm"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("valor_minimo", event.target.value)}
+                onChange={event => SaveValue("capital_atm", event.target.value)}
                 my={2}
               />
             </Grid>
 
-            <Grid item md={6} style={{ padding: '4px' }}>
+            <Grid item md={3} style={{ padding: '4px' }}>
               <TextField
-                id="periodo"
-                label="PERIODO"
+                id="comision"
+                label="comision"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("periodo", event.target.value)}
+                onChange={event => SaveValue("comision", event.target.value)}
                 my={2}
               />
             </Grid>
-
-
-            <Grid item md={12} style={{ padding: '4px' }}>
+            <Grid item md={3} style={{ padding: '4px' }}>
               <TextField
-                id="descripcion"
-                label="DESCRIPCION"
+                id="precio_mensual"
+                label="precio mensual"
                 defaultValue=""
                 variant="outlined"
                 fullWidth
-                onChange={event => SaveValue("descripcion", event.target.value)}
-                my={2}
-              />
-            </Grid>
-
-
-            <Grid item md={12} style={{ padding: '4px' }}>
-              <TextField
-                id="descripcion_larga"
-                label="DESCRIPCION_LARGA"
-                defaultValue=""
-                variant="outlined"
-                fullWidth
-                onChange={event => SaveValue("descripcion_larga", event.target.value)}
+                onChange={event => SaveValue("precio_mensual", event.target.value)}
                 my={2}
               />
             </Grid>
 
           </Grid>
 
-          <Button onClick={registrarProducto} variant="contained" color="primary" mt={3}>
-            GURADAR PRODUCTO
+          <Button onClick={registrarItem} variant="contained" color="primary" mt={3}>
+            GUARDAR PLAN
         </Button>
         </CardContent>
       </Card>
-
-
 
 
 
@@ -701,7 +729,7 @@ function ListaRegistrosRender() {
   );
 }
 
-function Products() {
+function SubPlan() {
 
 
   const [menu, setMenu] = useState(2);
@@ -709,15 +737,15 @@ function Products() {
 
   let itemRender = <ListaRegistrosRender />;
 
-  const btnListarProductos = async () => {
+  const btnListaElementos = async () => {
     setMenu(2);
-    let response = await obtenerListaProductos(setMenu);
+    let response = await obtenerListaItems(setMenu);
     console.log(response)
     setMenu(2);
 
   };
 
-  const btnRegistrarProducto = () => {
+  const btnRegistrarElemento = () => {
     setMenu(1);
   };
 
@@ -745,7 +773,7 @@ function Products() {
       <Helmet title="Settings" />
 
       <Typography variant="h3" gutterBottom display="inline">
-        GESTION BACKOFFICE - PRODUCTOS
+        GESTION BACKOFFICE - PLANES
       </Typography>
 
       <Breadcrumbs aria-label="Breadcrumb" mt={2}>
@@ -765,7 +793,7 @@ function Products() {
           <Grid mb={10} >
             <div style={{ display: "flex", justifyContent: 'flex-end', alignItems: 'center' }}>
               <Button
-                onClick={btnListarProductos}
+                onClick={btnListaElementos}
                 style={{ marginRight: "4px" }}
                 variant="contained"
                 color="primary"
@@ -774,7 +802,7 @@ function Products() {
                 LISTA
         </Button>
               <Button
-                onClick={btnRegistrarProducto}
+                onClick={btnRegistrarElemento}
                 style={{ marginRight: "4px" }}
                 variant="contained"
                 color="primary"
@@ -796,4 +824,12 @@ function Products() {
   );
 }
 
-export default Products;
+export default SubPlan;
+
+
+
+
+
+
+
+
